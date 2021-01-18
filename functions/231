@@ -5,8 +5,9 @@ import pandas as pd
 
 def processing(dataframes: list) -> pd.DataFrame:
   concatenation = pd.concat(dataframes)
-  df = concatenation.drop_duplicates(subset="text")
+  df = concatenation.drop_duplicates(subset="text", ignore_index=True)
   return df
+
 
 def TwitterAPI(query: str, nopages: int) -> pd.DataFrame:
   max_results = 100
