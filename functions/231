@@ -1,0 +1,33 @@
+import requests
+import json
+import pandas as pd
+
+
+def processing(dataframes: list) -> pd.DataFrame:
+  concatenation = pd.concat(dataframes)
+  df = concatenation.drop_duplicates(subset="text")
+  return df
+
+def TwitterAPI(query: str, nopages: int) -> pd.DataFrame:
+  max_results = 100
+  
+  url = f"https://api.twitter.com/2/tweets/search/recent?query={query}&max_results={max_results}"
+  your_bearer_token = "AAAAAAAAAAAAAAAAAAAAAOKXLwEAAAAAEBiCS9GZoRYI2CEEItJb%2F2F5iBY%3D4510rnAn2v0SqovRO9o1IFw2ZLzNzStxibPkTWQV6PrpNFwVck"
+
+  headers = {
+      "Authorization": f"Bearer {your_bearer_token}"
+      }
+  tweets = []
+
+  resp = requests.get(url, headers=headers)
+  tweets.extend(json.loads(resp.text)["data"])
+  next_token = json.loads(resp.text)["meta"]["next_token"]
+
+  for page in range(1, nopages):
+    url = f"https://api.twitter.com/2/tweets/search/recent?query={query}&max_results={max_results}&next_token={next_token}"
+    resp = requests.get(url, headers=headers)
+    tweets.extend(json.loads(resp.text)["data"])
+    next_token = json.loads(resp.text)["meta"]["next_token"]
+  
+  tweets_df = pd.DataFrame([dict(row, **{"label": query}) for row in tweets ])
+  return tweets_df
