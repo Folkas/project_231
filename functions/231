@@ -9,14 +9,13 @@ def processing(dataframes: list) -> pd.DataFrame:
   return df
 
 
-def TwitterAPI(query: str, nopages: int) -> pd.DataFrame:
+def TwitterAPI(query: str, nopages: int, bearer_token: str) -> pd.DataFrame:
   max_results = 100
   
   url = f"https://api.twitter.com/2/tweets/search/recent?query={query}&max_results={max_results}"
-  your_bearer_token = "AAAAAAAAAAAAAAAAAAAAAOKXLwEAAAAAEBiCS9GZoRYI2CEEItJb%2F2F5iBY%3D4510rnAn2v0SqovRO9o1IFw2ZLzNzStxibPkTWQV6PrpNFwVck"
 
   headers = {
-      "Authorization": f"Bearer {your_bearer_token}"
+      "Authorization": f"Bearer {bearer_token}"
       }
   tweets = []
 
